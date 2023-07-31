@@ -26,8 +26,8 @@ class Player {
     }
 
     void erase(double oldxpos, double oldypos){
-            DrawCircle(oldxpos, oldypos, 17, ERASEBLACK);
-        }
+        DrawCircle(oldxpos, oldypos, 17, ERASEBLACK);
+    }
     
     void move(char direction){
 
@@ -59,12 +59,49 @@ class Bullet {
 
         int xpos;
         int ypos;
+        int width = 3;
+        int height = 3;
+        int xspeed = 2;
+        int yspeed = 2;
 
-        Bullet(int xpos, int ypos){
+        int SCREEN_WIDTH = GetScreenWidth();
+        int SCREEN_HEIGHT = GetScreenHeight();
+
+        Color BULLETGREEN = {0, 255, 0, 255};
+        Color ERASEBLACK = {0, 0, 0, 255};
+
+        Bullet(int xpos, int ypos){ //Bullet x position and y position are determined by where the cursor is 
             this->xpos = xpos;
             this->ypos = ypos;
-            std::cout << xpos << std::endl;
         }
+    
+    void move(){
+        erase(xpos, ypos);
+        this->xpos += xspeed;
+        this->ypos += yspeed;
+
+        if (xpos >= SCREEN_WIDTH){ //Makes bullet bounce of walls
+            this->xspeed = 0 - xspeed;
+        }
+        if (ypos >= SCREEN_HEIGHT){
+            this->yspeed = 0 - yspeed;
+        }
+        if (xpos <= 0){
+            this->xspeed = 0 - xspeed;
+        }
+        if (ypos < 0){
+            this->yspeed = 0 - yspeed;
+        }
+    }
+
+    void draw(){
+        DrawRectangle(xpos, ypos, width, height, BULLETGREEN);
+    }
+
+    void erase(int oldxpos, int oldypos){
+        DrawCircle(oldxpos, oldypos, 17, ERASEBLACK);
+    }
+
 };
 
 
@@ -82,6 +119,7 @@ int main(){
 
     //Initializes player
     Player player;
+    Bullet bullet(100, 100);
 
 
     // Main game loop
@@ -114,6 +152,8 @@ int main(){
         // Clear the screen and draw a circle in the center
         BeginDrawing();
         player.draw();
+        bullet.move();
+        bullet.draw();
         EndDrawing();
     }
 
