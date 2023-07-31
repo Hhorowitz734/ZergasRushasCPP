@@ -8,6 +8,52 @@
 //Compile code with g++ zergrush.cpp -o zergrush -I/opt/homebrew/Cellar/raylib/4.5.0/include -L/opt/homebrew/Cellar/raylib/4.5.0/lib -lraylib -framework CoreVideo -framework IOKit -framework Cocoa -framework GLUT -framework OpenGL
 //Run with ./zergrush
 
+class Player {
+    public:
+        int xpos = GetScreenWidth() / 2;
+        int ypos = GetScreenHeight() / 2;
+        int width = 4;
+        int height = 4;
+        int speed = 5;
+        int bullet_speed = 5;
+        int hp = 100;
+        Color PLAYERWHITE = {255, 255, 255, 255};
+        Color ERASEBLACK = {0, 0, 0, 255};
+
+    
+    void draw(){
+        DrawRectangle(xpos, ypos, width, height, PLAYERWHITE);
+    }
+
+    void erase(double oldxpos, double oldypos){
+            DrawCircle(oldxpos, oldypos, 17, ERASEBLACK);
+        }
+    
+    void move(char direction){
+
+        erase(xpos, ypos);
+
+        switch (direction) {
+            case 'u':
+                this->ypos -= speed; 
+                break;
+            case 'd':
+                this->ypos += speed; 
+                break;
+            case 'l':
+                this->xpos -= speed; 
+                break;
+            case 'r':
+                this->xpos += speed; 
+                break;
+            default:
+                // Handle invalid direction
+                break;
+        }
+    }
+
+};
+
 
 int main(){
 
@@ -21,6 +67,9 @@ int main(){
     SetTargetFPS(60);
     ClearBackground(BGBLACK);
 
+    //Initializes player
+    Player player;
+
 
 
     // Main game loop
@@ -31,12 +80,26 @@ int main(){
             CloseWindow(); // Close the window when space bar is pressed
         }
 
+        //Handles player movement
+        if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP)) {
+            player.move('u');
+        } 
+        if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN)) {
+            player.move('d');
+        }
+        if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT)) {
+            player.move('l');
+        }
+        if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
+            player.move('r');
+        }
+
 
         
 
         // Clear the screen and draw a circle in the center
         BeginDrawing();
-
+        player.draw();
         EndDrawing();
     }
 
