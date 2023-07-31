@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
+#include <vector>
 
 //Compile code with g++ zergrush.cpp -o zergrush -I/opt/homebrew/Cellar/raylib/4.5.0/include -L/opt/homebrew/Cellar/raylib/4.5.0/lib -lraylib -framework CoreVideo -framework IOKit -framework Cocoa -framework GLUT -framework OpenGL
 //Run with ./zergrush
@@ -61,8 +62,8 @@ class Bullet {
         int ypos;
         int width = 3;
         int height = 3;
-        int xspeed = 2;
-        int yspeed = 2;
+        int xspeed = 3;
+        int yspeed = 3;
 
         int SCREEN_WIDTH = GetScreenWidth();
         int SCREEN_HEIGHT = GetScreenHeight();
@@ -119,7 +120,9 @@ int main(){
 
     //Initializes player
     Player player;
-    Bullet bullet(100, 100);
+    
+    //Initializes a vector for bullets
+    std::vector<Bullet> bullets;
 
 
     // Main game loop
@@ -146,14 +149,43 @@ int main(){
             player.erase(player.xpos, player.ypos);
         }
 
+        //Handles player shooting
+        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
+            int mouseX = GetMouseX();
+            int mouseY = GetMouseY();
+            int yStart;
+            int xStart;
+
+            if (player.xpos <= mouseX){
+                xStart = player.xpos + player.width + 1;
+            } else if (player.xpos > mouseX){
+                xStart = player.xpos - player.width - 1;  
+            }
+
+            if (player.ypos <= mouseY){
+                yStart = player.ypos + player.height + 1;
+            } else if (player.ypos > mouseY){
+                yStart = player.ypos - player.height - 1;
+            }
+            
+            Bullet newBullet(xStart, yStart);
+            bullets.push_back(newBullet);
+        }
+
 
         
 
-        // Clear the screen and draw a circle in the center
+        // Main game loop
         BeginDrawing();
         player.draw();
-        bullet.move();
-        bullet.draw();
+
+        for (Bullet& bullet : bullets){
+            bullet.move();
+            bullet.draw();
+        }
+        
+        
+
         EndDrawing();
     }
 
