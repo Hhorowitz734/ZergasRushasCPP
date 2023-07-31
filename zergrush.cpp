@@ -54,6 +54,19 @@ class Player {
 
 };
 
+class Bullet {
+    public:
+
+        int xpos;
+        int ypos;
+
+        Bullet(int xpos, int ypos){
+            this->xpos = xpos;
+            this->ypos = ypos;
+            std::cout << xpos << std::endl;
+        }
+};
+
 
 int main(){
 
@@ -69,7 +82,6 @@ int main(){
 
     //Initializes player
     Player player;
-
 
 
     // Main game loop
@@ -92,6 +104,8 @@ int main(){
         }
         if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) {
             player.move('r');
+        } else {
+            player.erase(player.xpos, player.ypos);
         }
 
 
